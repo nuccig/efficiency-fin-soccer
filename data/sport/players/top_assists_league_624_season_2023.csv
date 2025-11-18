@@ -1,0 +1,21 @@
+category,player_id,player_name,team_id,team_name,league_id,season,appearences,minutes,goals,assists,shots_total
+topassists,44348,Eduardo,120,Botafogo,624,2023,33,2596,6,6,33
+topassists,390,Tiquinho Soares,120,Botafogo,624,2023,32,2391,17,4,60
+topassists,9958,Tchê Tchê,120,Botafogo,624,2023,35,2579,2,4,25
+topassists,6201,L. Di Plácido,120,Botafogo,624,2023,34,2300,1,4,9
+topassists,652,Marçal,120,Botafogo,624,2023,22,1606,,3,7
+topassists,9218,Marlon Freitas,120,Botafogo,624,2023,36,2831,1,2,24
+topassists,197317,Hugo,120,Botafogo,624,2023,34,1329,,2,6
+topassists,10061,Yuri,7835,Portuguesa RJ,624,2023,16,690,,2,5
+topassists,41311,Gustavo Sauer,120,Botafogo,624,2023,19,265,2,1,2
+topassists,568,Gabriel Pires,120,Botafogo,624,2023,19,847,,1,10
+topassists,280746,Willian,7835,Portuguesa RJ,624,2023,7,336,0,1,4
+topassists,54614,Gabriel Pinheiro,7782,Nova Iguaçu,624,2023,14,361,,0,
+topassists,403432,Gabriel Feliciano,7854,Bangu,624,2023,14,616,,0,2
+topassists,78054,Rafael Castro,13107,Audax Rio,624,2023,8,27,,0,
+topassists,54467,Joazi,7835,Portuguesa RJ,624,2023,7,305,0,0,
+topassists,317037,Elicley,7835,Portuguesa RJ,624,2023,6,408,0,0,3
+topassists,68518,Igor,7782,Nova Iguaçu,624,2023,6,449,0,0,2
+topassists,195092,Guilherme Liberato,7854,Bangu,624,2023,5,50,,0,
+topassists,305820,Gabryel Martins,7854,Bangu,624,2023,3,14,,0,
+topassists,349961,Matheus Matias,7782,Nova Iguaçu,624,2023,3,26,0,0,
