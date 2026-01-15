@@ -5,13 +5,15 @@ from tqdm import tqdm
 from .api_football import (
     APIFootballClient,
     MatchResultsService,
-    SeasonsService,
     TopAssistsService,
     TopScorersService,
     load_target_leagues,
     load_target_seasons,
 )
 from .storage import GlueCrawlerRunner, PostgresLoader, S3Uploader
+from .utils import setup_logger
+
+logger = setup_logger(__name__)
 
 
 class APIFootballExtractionPipeline:
@@ -20,13 +22,12 @@ class APIFootballExtractionPipeline:
         client: APIFootballClient | None = None,
         data_dir: Path | None = None,
         enable_s3: bool = True,
-        enable_postgres: bool = True,
+        enable_postgres: bool = False,  # Desabilitado por padrão (não necessário para analytics)
         enable_glue: bool = True,
     ) -> None:
         self.client = client or APIFootballClient()
         self.seasons = load_target_seasons()
         self.leagues = load_target_leagues()
-        self.seasons_service = SeasonsService(self.client)
         self.fixtures_service = MatchResultsService(self.client)
         self.scorers_service = TopScorersService(self.client)
         self.assists_service = TopAssistsService(self.client)
@@ -53,8 +54,6 @@ class APIFootballExtractionPipeline:
 
     def _extract_data(self) -> None:
         """Extrai dados da API Football para todas as leagues e seasons configuradas."""
-        self.seasons_service.get_seasons()
-
         total = len(self.leagues) * len(self.seasons)
         with tqdm(total=total, desc="Extraindo dados da API") as pbar:
             for league_id in self.leagues:
@@ -73,8 +72,9 @@ class APIFootballExtractionPipeline:
         try:
             self.s3_uploader = S3Uploader()
             self.s3_uploader.upload_sport_data(self.data_dir)
+            self.s3_uploader.upload_financial_data(self.data_dir)
         except Exception as e:
-            print(f"Erro no upload S3: {e}")
+            logger.error(f"Erro no upload S3: {e}")
 
     def _load_to_postgres(self) -> None:
         """Cria schema e carrega dados no PostgreSQL."""
@@ -86,7 +86,8 @@ class APIFootballExtractionPipeline:
             self.postgres_loader.create_schema()
             self.postgres_loader.load_all_data(self.data_dir)
         except Exception as e:
-            print(f"Erro na carga PostgreSQL: {e}")
+            logger.error(f"Erro na carga PostgreSQL: {e}")
+            raise  # Propaga o erro para que o pipeline saiba que falhou
 
     def _run_glue_crawlers(self) -> None:
         """Executa os crawlers do AWS Glue."""
@@ -97,10 +98,10 @@ class APIFootballExtractionPipeline:
             self.glue_runner = GlueCrawlerRunner()
             self.glue_runner.start_all_crawlers()
         except Exception as e:
-            print(f"Erro ao executar crawlers: {e}")
+            logger.error(f"Erro ao executar crawlers: {e}")
 
     def run(self) -> None:
-        """Executa o pipeline completo de extração, upload S3, carga PostgreSQL e crawlers Glue."""
+        """Executa o pipeline completo de extração, upload S3 (opcional: PostgreSQL) e crawlers Glue."""
         if not self._has_targets():
             return
 

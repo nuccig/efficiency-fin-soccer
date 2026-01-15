@@ -60,5 +60,5 @@ resource "aws_s3_object" "sport_players" {
 
 resource "aws_s3_object" "financial" {
   bucket = aws_s3_bucket.data_lake.id
-  key    = "financial/"
+  key    = "financial/_data_treated/"
 }

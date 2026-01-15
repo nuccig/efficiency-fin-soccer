@@ -14,7 +14,13 @@ from libs.pipeline import APIFootballExtractionPipeline
 
 
 def main() -> None:
-    pipeline = APIFootballExtractionPipeline()
+    # Para analytics, apenas S3 + Athena é suficiente
+    # RDS desabilitado por padrão (enable_postgres=False)
+    pipeline = APIFootballExtractionPipeline(
+        enable_s3=True,
+        enable_postgres=False,  # Não necessário para analytics
+        enable_glue=True
+    )
     pipeline.run()
 
 

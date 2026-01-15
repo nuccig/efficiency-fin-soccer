@@ -5,8 +5,13 @@ aws_region = "us-east-1"
 project_name = "efficiency-fin-soccer"
 environment  = "dev"
 
-# RDS Configuration
-db_name              = "soccer_db"
-db_username          = "dbadmin"
-db_instance_class    = "db.t3.micro"
-db_allocated_storage = 20
+# Service Toggles (para analytics, mantenha ambos como false)
+enable_rds = false  # RDS não necessário para analytics (S3 + Athena é suficiente)
+enable_vpc = false  # VPC não necessário para S3/Glue/Athena (apenas se usar RDS)
+
+# RDS Configuration (apenas se enable_rds = true)
+# db_name              = "soccer_db"
+# db_username          = "dbadmin"
+# db_password          = "your-secure-password"
+# db_instance_class    = "db.t3.micro"
+# db_allocated_storage = 20

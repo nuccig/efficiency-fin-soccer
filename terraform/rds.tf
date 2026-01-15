@@ -1,4 +1,8 @@
+# RDS Resources (Opcional - habilitar apenas se necessário)
+# Para analytics, S3 + Athena é suficiente, RDS não é necessário
+
 resource "aws_db_subnet_group" "postgres" {
+  count      = var.enable_rds && var.enable_vpc ? 1 : 0
   name       = "${var.project_name}-${var.environment}-db-subnet"
   subnet_ids = aws_subnet.public[*].id
 
@@ -10,9 +14,10 @@ resource "aws_db_subnet_group" "postgres" {
 }
 
 resource "aws_security_group" "rds" {
+  count       = var.enable_rds && var.enable_vpc ? 1 : 0
   name        = "${var.project_name}-${var.environment}-rds-sg"
   description = "Security group for RDS PostgreSQL"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = aws_vpc.main[0].id
 
   ingress {
     description = "PostgreSQL from anywhere"
@@ -38,6 +43,7 @@ resource "aws_security_group" "rds" {
 }
 
 resource "aws_db_instance" "postgres" {
+  count                  = var.enable_rds ? 1 : 0
   identifier             = "${var.project_name}-${var.environment}-db"
   engine                 = "postgres"
   engine_version         = "17.2"
@@ -47,8 +53,8 @@ resource "aws_db_instance" "postgres" {
   db_name                = var.db_name
   username               = var.db_username
   password               = var.db_password
-  db_subnet_group_name   = aws_db_subnet_group.postgres.name
-  vpc_security_group_ids = [aws_security_group.rds.id]
+  db_subnet_group_name   = var.enable_vpc ? aws_db_subnet_group.postgres[0].name : null
+  vpc_security_group_ids = var.enable_vpc ? [aws_security_group.rds[0].id] : []
 
   skip_final_snapshot        = true
   publicly_accessible        = true

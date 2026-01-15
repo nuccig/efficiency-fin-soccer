@@ -4,9 +4,11 @@ Pipeline de extração e análise de dados de futebol integrando API-Football co
 
 ## 🎯 Visão Geral
 
-Sistema que extrai dados da API-Football (fixtures, artilheiros e assistências), armazena em S3 com estrutura particionada, carrega em PostgreSQL RDS e cataloga via AWS Glue para consultas no Athena.
+Sistema de **analytics** que extrai dados da API-Football (fixtures, artilheiros e assistências) e dados financeiros, armazena em S3 com estrutura particionada e cataloga via AWS Glue para consultas no Athena.
 
-**Fluxo:** API-Football → CSV Local → S3 + PostgreSQL → Glue Crawler → Athena
+**Fluxo:** API-Football → CSV Local → S3 → Glue Crawler → Athena
+
+**Nota:** RDS PostgreSQL é opcional (desabilitado por padrão). Para analytics, apenas S3 + Athena é suficiente.
 
 ## 📁 Estrutura
 
@@ -32,18 +34,17 @@ Sistema que extrai dados da API-Football (fixtures, artilheiros e assistências)
 
 - Extração configurável por leagues/seasons (config.json)
 - Upload S3 com limpeza automática e particionamento
-- Carga PostgreSQL via COPY com tratamento de NULL
-- Schema gerenciado em arquivo único (docs/sql/schema.sql)
+- Upload de dados esportivos e financeiros
 - Execução de crawlers Glue
 - Monitoramento de progresso com tqdm
+- **Opcional:** Carga PostgreSQL (desabilitado por padrão)
 
 **☁️ Infraestrutura AWS:**
 
 - S3 Data Lake com lifecycle policies (STANDARD → STANDARD_IA @ 30d → GLACIER_IR @ 90d)
-- RDS PostgreSQL 17.2 (db.t3.micro, 20GB gp3, sem backup)
-- VPC com subnets públicas
-- Glue Database + Crawlers
-- Athena Workgroup
+- Glue Database + Crawlers (sport e financial)
+- Athena Workgroup para consultas SQL
+- **Opcional:** RDS PostgreSQL (não necessário para analytics)
 
 **📊 Dados:**
 

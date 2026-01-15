@@ -16,6 +16,13 @@ variable "environment" {
   default     = "dev"
 }
 
+# RDS Configuration (Opcional - não necessário para analytics)
+variable "enable_rds" {
+  description = "Habilitar criação de RDS PostgreSQL (não necessário para analytics)"
+  type        = bool
+  default     = false
+}
+
 variable "db_name" {
   description = "RDS database name"
   type        = string
@@ -45,4 +52,11 @@ variable "db_allocated_storage" {
   description = "RDS allocated storage in GB"
   type        = number
   default     = 10
+}
+
+# Network Configuration (Opcional - não necessário para S3/Glue/Athena)
+variable "enable_vpc" {
+  description = "Habilitar criação de VPC (necessário apenas se usar RDS)"
+  type        = bool
+  default     = false
 }
